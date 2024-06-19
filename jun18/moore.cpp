@@ -7,17 +7,12 @@
     then we're going to drop random moore neighborhoods into the array
 */
 
+#include "moore.h"
 #include <iostream>
 #include <stdio.h>
 #include <iomanip>
 #include <stdlib.h>
 using namespace std;
-
-int** makeTwoDArray(int, int);
-void initTwoDArray(int**, int, int, int);
-void printArray(int**, int, int);
-void mooreDrop(int**, int, int, int, int);
-bool boundsCheck(int px, int py, int minx, int miny, int maxx, int maxy);
 
 int main(int argv, char** argc){
     int rows;
