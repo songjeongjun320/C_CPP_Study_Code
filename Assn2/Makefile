@@ -1,7 +1,6 @@
 # Author: Jun Song
 # Date: 06/19/2024
-# Description: Rotormachine with c++
-
+# Description: Rotormachine with C++
 
 # Makefile for Rotor Machine Project
 
@@ -15,10 +14,7 @@ CXXFLAGS = -Wall -Wextra -pedantic -std=c++11
 TARGET = rotorMachine
 
 # Source files
-SRC = assn3.cpp rotor.cpp
-
-# Header files
-HDR = rotorMachine.h
+SRC = song_jun_assn3.cpp rotorMachine.cpp
 
 # Object files
 OBJ = $(SRC:.cpp=.o)
@@ -27,11 +23,11 @@ OBJ = $(SRC:.cpp=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-    $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ)
 
-%.o: %.cpp $(HDR)
-    $(CXX) $(CXXFLAGS) -c $<
+%.o: %.cpp rotorMachine.h
+	$(CXX) $(CXXFLAGS) -c $<
 
 # Clean the build
 clean:
-    rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET)

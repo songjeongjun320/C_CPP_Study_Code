@@ -4,25 +4,22 @@ Date: 06/19/2024
 Description: Rotormachine with c++
 */
 
-// assn3.cpp
-
 #include "rotorMachine.h"
-#include <iostream>
-#include <fstream>
-#include <cstring>
+#include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 void printUsage() {
-    std::cerr << "Usage:\n";
-    std::cerr << "./exe -i <file>\n";
-    std::cerr << "./exe -e <file1> <file2> -r <r1> <r2>\n";
-    std::cerr << "./exe -d <file1> <file2> -r <r1> <r2>\n";
-    std::cerr << "./exe -e <file1> <file2> -r <r1> <r2> -i <file>\n";
-    std::cerr << "./exe -d <file1> <file2> -r <r1> <r2> -i <file>\n";
-    exit(1);
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr, "./exe -i <file>\n");
+    fprintf(stderr, "./exe -e <file1> <file2> -r <r1> <r2>\n");
+    fprintf(stderr, "./exe -d <file1> <file2> -r <r1> <r2>\n");
+    fprintf(stderr, "./exe -e <file1> <file2> -r <r1> <r2> -i <file>\n");
+    fprintf(stderr, "./exe -d <file1> <file2> -r <r1> <r2> -i <file>\n");
+    exit(EXIT_FAILURE);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     if (argc < 3) {
         printUsage();
     }
@@ -39,35 +36,43 @@ int main(int argc, char* argv[]) {
 
         char *inputFile = argv[2];
         char *outputFile = argv[3];
-        int rotations1 = atoi(argv[5]);
-        int rotations2 = atoi(argv[6]);
+        int rotor1Pos = atoi(argv[5]);
+        int rotor2Pos = atoi(argv[6]);
 
-        if (argc == 8 && strcmp(argv[7], "-i") == 0) {
-            buildIni(argv[8]);
+        if (argc == 8) {
+            if (strcmp(argv[7], "-i") == 0) {
+                buildIni(argv[8]);
+            } else {
+                printUsage();
+            }
+        }
+
+        FILE *infile = fopen(inputFile, "r");
+        if (infile == NULL) {
+            perror("Error opening input file");
+            exit(EXIT_FAILURE);
+        }
+
+        FILE *outfile = fopen(outputFile, "w");
+        if (outfile == NULL) {
+            perror("Error opening output file");
+            fclose(infile);
+            exit(EXIT_FAILURE);
         }
 
         int rotor1[28], rotor2[28];
         buildRotors(rotor1, rotor2);
-        setRotor1(rotor1, rotations1);
-        setRotor2(rotor2, rotations2);
-
-        std::ifstream infile(inputFile);
-        std::ofstream outfile(outputFile);
-
-        if (!infile) {
-            std::cerr << "Error: Could not open input file." << std::endl;
-            return 1;
-        }
-        if (!outfile) {
-            std::cerr << "Error: Could not open output file." << std::endl;
-            return 1;
-        }
+        setRotor1(rotor1, rotor1Pos);
+        setRotor2(rotor2, rotor2Pos);
 
         if (strcmp(argv[1], "-e") == 0) {
             encryptFile(infile, outfile, rotor1, rotor2);
         } else {
             decryptFile(infile, outfile, rotor1, rotor2);
         }
+
+        fclose(infile);
+        fclose(outfile);
     } else {
         printUsage();
     }
