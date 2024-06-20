@@ -5,52 +5,50 @@ Description: Rotormachine with c++
 */
 
 #include "rotorMachine.h"
-#include <cstdlib>
-#include <cstring>
+#include <fstream>
+#include <iostream>
+
+using namespace std;
 
 void buildIni(char *filename) {
-    FILE *configFile = fopen(filename, "r");
-    if (configFile == NULL) {
-        fprintf(stderr, "Error: Configuration file %s not found.\n", filename);
+    ifstream configFile(filename);
+    if (!configFile.is_open()) {
+        cerr << "Error: Unable to open configuration file " << filename << endl;
         exit(EXIT_FAILURE);
     }
 
-    FILE *rotorsFile = fopen("rotors.ini", "w");
-    if (rotorsFile == NULL) {
-        perror("Error creating rotors.ini file");
-        fclose(configFile);
+    ofstream rotorsFile("rotors.ini");
+    if (!rotorsFile.is_open()) {
+        cerr << "Error: Unable to create or open rotors.ini" << endl;
+        configFile.close();
         exit(EXIT_FAILURE);
     }
 
     int value;
-    while (fscanf(configFile, "%d", &value) == 1) {
-        value ^= 42;
-        fprintf(rotorsFile, "%d ", value);
+    while (configFile >> value) {
+        value ^= 42;  // XOR encryption with 42
+        rotorsFile << value << " ";
     }
 
-    fclose(configFile);
-    fclose(rotorsFile);
+    configFile.close();
+    rotorsFile.close();
 }
 
 void buildRotors(int rotor1[28], int rotor2[28]) {
-    FILE *rotorsFile = fopen("rotors.ini", "r");
-    if (rotorsFile == NULL) {
-        fprintf(stderr, "Error: Rotor machine not initialized. Run with -i option and provide an appropriate configuration file.\n");
+    ifstream rotorsFile("rotors.ini");
+    if (!rotorsFile.is_open()) {
+        cerr << "Error: Rotor machine not initialized. Run with -i option and provide an appropriate configuration file." << endl;
         exit(EXIT_FAILURE);
     }
 
-    int value;
     for (int i = 0; i < 28; ++i) {
-        fscanf(rotorsFile, "%d", &value);
-        rotor1[i] = value ^ 42;
+        rotorsFile >> rotor1[i];
+    }
+    for (int i = 0; i < 28; ++i) {
+        rotorsFile >> rotor2[i];
     }
 
-    for (int i = 0; i < 28; ++i) {
-        fscanf(rotorsFile, "%d", &value);
-        rotor2[i] = value ^ 42;
-    }
-
-    fclose(rotorsFile);
+    rotorsFile.close();
 }
 
 void rotateRotorRight(int rotor[28]) {
@@ -82,59 +80,60 @@ void setRotor2(int rotor[28], int rotations) {
 }
 
 int charToIndex(char convert) {
-    if (convert >= 'A' && convert <= 'Z') {
-        return convert - 'A';
-    } else if (convert == ' ') {
+    if (convert == ' ') {
         return 26;
     } else if (convert == '.') {
         return 27;
     } else {
-        fprintf(stderr, "Error: Invalid character %c\n", convert);
-        exit(EXIT_FAILURE);
+        return toupper(convert) - 'A';
     }
 }
 
 char indexToChar(int convert) {
-    if (convert >= 0 && convert <= 25) {
-        return static_cast<char>(convert + 'A');
-    } else if (convert == 26) {
+    if (convert == 26) {
         return ' ';
     } else if (convert == 27) {
         return '.';
     } else {
-        fprintf(stderr, "Error: Invalid index %d\n", convert);
-        exit(EXIT_FAILURE);
+        return static_cast<char>(convert + 'A');
     }
 }
 
-void encryptFile(FILE* infile, FILE* outfile, int rotor1[28], int rotor2[28]) {
-    char buffer[256];
-    while (fgets(buffer, sizeof(buffer), infile)) {
-        for (size_t i = 0; i < strlen(buffer); i++) {
-            if (buffer[i] != '\n') {
-                int idx = charToIndex(buffer[i]);
-                int encryptedIdx = rotor2[rotor1[idx]];
-                buffer[i] = indexToChar(encryptedIdx);
-                rotateRotorRight(rotor1);
-                rotateRotorLeft(rotor2);
-            }
+void encryptFile(ifstream &infile, ofstream &outfile, int rotor1[28], int rotor2[28]) {
+    int ch;
+    while ((ch = infile.get()) != EOF) {
+        if (ch == '\n') {
+            outfile.put('\n');
+            continue;
         }
-        fputs(buffer, outfile);
+        int index = charToIndex(static_cast<char>(ch));
+        int encryptedIndex = rotor2[rotor1[index]];
+        char encryptedChar = indexToChar(encryptedIndex);
+        outfile.put(encryptedChar);
+        rotateRotorRight(rotor1);
+        rotateRotorLeft(rotor2);
     }
 }
 
-void decryptFile(FILE* infile, FILE* outfile, int rotor1[28], int rotor2[28]) {
-    char buffer[256];
-    while (fgets(buffer, sizeof(buffer), infile)) {
-        for (size_t i = 0; i < strlen(buffer); i++) {
-            if (buffer[i] != '\n') {
-                int idx = charToIndex(buffer[i]);
-                int decryptedIdx = rotor1[rotor2[idx]];
-                buffer[i] = indexToChar(decryptedIdx);
-                rotateRotorRight(rotor1);
-                rotateRotorLeft(rotor2);
+void decryptFile(ifstream &infile, ofstream &outfile, int rotor1[28], int rotor2[28]) {
+    int ch;
+    while ((ch = infile.get()) != EOF) {
+        if (ch == '\n') {
+            outfile.put('\n');
+            continue;
+        }
+        int index = charToIndex(static_cast<char>(ch));
+        // Find original index from rotor2
+        for (int i = 0; i < 28; ++i) {
+            if (rotor2[i] == index) {
+                index = i;
+                break;
             }
         }
-        fputs(buffer, outfile);
+        int decryptedIndex = rotor1[index];
+        char decryptedChar = indexToChar(decryptedIndex);
+        outfile.put(decryptedChar);
+        rotateRotorRight(rotor1);
+        rotateRotorLeft(rotor2);
     }
 }

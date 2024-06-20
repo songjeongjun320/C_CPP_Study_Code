@@ -5,29 +5,32 @@
 # Makefile for Rotor Machine Project
 
 # Compiler
-CXX = g++
+CC = g++
 
 # Compiler Flags
-CXXFLAGS = -Wall -Wextra -pedantic -std=c++11
+CFLAGS = -g -Wall
 
 # Target executable
-TARGET = rotorMachine
+EXE = exe
 
 # Source files
-SRC = song_jun_assn3.cpp rotorMachine.cpp
+SRCS = rotorMachine.cpp song_jun_assn3.cpp
 
 # Object files
-OBJ = $(SRC:.cpp=.o)
+OBJS = $(SRCS:.cpp=.o)
 
 # Build the target executable
-all: $(TARGET)
+$(EXE): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(EXE)
 
-$(TARGET): $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ)
+# Compile rotorMachine.cpp to rotorMachine.o
+rotorMachine.o: rotorMachine.cpp
+	$(CC) $(CFLAGS) -c rotorMachine.cpp -o rotorMachine.o
 
-%.o: %.cpp rotorMachine.h
-	$(CXX) $(CXXFLAGS) -c $<
+# Compile song_jun_assn3.cpp to song_jun_assn3.o
+song_jun_assn3.o: song_jun_assn3.cpp
+	$(CC) $(CFLAGS) -c song_jun_assn3.cpp -o song_jun_assn3.o
 
 # Clean the build
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJS) $(EXE)

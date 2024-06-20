@@ -9,6 +9,8 @@ Description: Rotormachine with c++
 #include <cstdlib>
 #include <cstring>
 
+using namespace std;
+
 void printUsage() {
     fprintf(stderr, "Usage:\n");
     fprintf(stderr, "./exe -i <file>\n");
@@ -47,16 +49,16 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        FILE *infile = fopen(inputFile, "r");
-        if (infile == NULL) {
+        ifstream infile(inputFile);
+        if (!infile.is_open()) {
             perror("Error opening input file");
             exit(EXIT_FAILURE);
         }
 
-        FILE *outfile = fopen(outputFile, "w");
-        if (outfile == NULL) {
+        ofstream outfile(outputFile);
+        if (!outfile.is_open()) {
             perror("Error opening output file");
-            fclose(infile);
+            infile.close();
             exit(EXIT_FAILURE);
         }
 
@@ -71,8 +73,8 @@ int main(int argc, char *argv[]) {
             decryptFile(infile, outfile, rotor1, rotor2);
         }
 
-        fclose(infile);
-        fclose(outfile);
+        infile.close();
+        outfile.close();
     } else {
         printUsage();
     }
