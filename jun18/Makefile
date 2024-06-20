@@ -4,3 +4,5 @@ exe: moore.o
 moore.o: moore.h
 	g++ -g -Wall -c moore.cpp
 
+clean:
+	rm *.o exe -v
