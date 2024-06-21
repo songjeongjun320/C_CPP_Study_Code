@@ -86,7 +86,6 @@ void rotateRotorRight(int rotor[28]) {
 
 /**
  * @brief Rotates a rotor array to the left by one position.
- * 
  * @param rotor The rotor array to rotate.
  */
 void rotateRotorLeft(int rotor[28]) {
@@ -99,7 +98,6 @@ void rotateRotorLeft(int rotor[28]) {
 
 /**
  * @brief Sets the initial position of rotor1 by rotating it to the right by the specified number of positions.
- * 
  * @param rotor The rotor array to set.
  * @param rotations The number of positions to rotate rotor1 to the right.
  */
