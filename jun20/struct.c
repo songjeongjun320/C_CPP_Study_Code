@@ -23,5 +23,5 @@ int main(int argc, char const *argv[]){
     test2.f = 1.2;
     test2.d = 1.234236243623562;
 
-    return
+    return 0;
 }
