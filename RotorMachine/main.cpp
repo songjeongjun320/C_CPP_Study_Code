@@ -1,9 +1,3 @@
-/*
-Author: Jun Song
-Date: 06/19/2024
-Description: Rotormachine with c++
-*/
-
 #include "rotorMachine.h" // Include the header file for rotor machine functions
 #include <cstdio> // Include C standard I/O functions
 #include <cstdlib> // Include C standard library functions

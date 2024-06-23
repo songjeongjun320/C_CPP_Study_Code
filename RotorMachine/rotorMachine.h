@@ -1,8 +1,3 @@
-/*
-Author: Jun Song
-Date: 06/19/2024
-Description: Rotormachine with c++
-*/
 #ifndef ROTORMACHINE_H
 #define ROTORMACHINE_H
 
