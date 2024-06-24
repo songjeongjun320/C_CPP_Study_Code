@@ -1,7 +1,3 @@
-# Author: Jun Song
-# Date: 06/19/2024
-# Description: Rotormachine with C++
-
 # Makefile for Rotor Machine Project
 
 # Compiler
