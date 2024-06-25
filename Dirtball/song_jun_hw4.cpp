@@ -1,10 +1,21 @@
+/*
+Name : Jun Song
+Date : 06/24/2024
+Description : This program simulates terraforming by generating and modifying a 
+landmass grid based on user inputs. Outputs include raw, normalized, and finalized 
+landmass grids displayed on the console and saved to text files.
+Usage : Compile and run the program. Optionally set a seed for random number generation.
+terraformer [-s <seed>]
+-s <seed>: Optional argument to set the random number generator seed.
+Follow the prompts to enter grid width, height, waterline level, dirtball radius, power, and the number of dirtballs to drop
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
 #include <fstream>
-#include <string>
 
 using namespace std;
 
@@ -23,7 +34,7 @@ int main(int argc, char** argv) {
 
     // Parse command line arguments for seed
     for (int i = 1; i < argc; i++) {
-        if (string(argv[i]) == "-s" && i + 1 < argc) {
+        if (argv[i][0] == '-' && argv[i][1] == 's' && i + 1 < argc) {
             seed = atoi(argv[++i]);
         }
     }
