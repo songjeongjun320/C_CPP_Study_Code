@@ -15,6 +15,11 @@ Point2D::Point2D(int x, int y){
     this->y = y;
 }
 
+Point2D::Point2D(Point2D* obj){
+    this->x = obj->x;
+    this->y = obj->y;
+}
+
 Circle::Circle(){
     center = new Point2D();
     radius = 1;
@@ -46,6 +51,12 @@ float Circle::getDiameter(){
 float Circle::getCircumference(){
     return M_PI * getDiameter();
 }
+
 float Circle::getArea(){
     return (radius * radius) * M_PI;
+}
+
+void Circle::rebuildCenter(int x, int y){
+    delete center;
+    center = new Point2D(x,y);
 }

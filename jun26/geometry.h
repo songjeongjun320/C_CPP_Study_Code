@@ -10,6 +10,7 @@ class Point2D{
     public:
         Point2D();
         Point2D(int, int);
+        Point2D(Point2D*);
 };
 
 class Circle{
@@ -27,4 +28,5 @@ class Circle{
         float getDiameter();
         float getCircumference();
         float getArea();
+        void rebuildCenter(int, int);
 };
