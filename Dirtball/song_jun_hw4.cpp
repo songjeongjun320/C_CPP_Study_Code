@@ -16,6 +16,7 @@ Follow the prompts to enter grid width, height, waterline level, dirtball radius
 #include <ctime>
 #include <cstdlib>
 #include <fstream>
+#include <cstring>
 
 using namespace std;
 
@@ -30,16 +31,13 @@ char** finalizeMap(int** map, int width, int height, int waterline);
 // Main function
 int main(int argc, char** argv) {
     int width, height, waterline, radius, power, numDirtballs;
-    unsigned int seed = time(0);
 
     // Parse command line arguments for seed
-    for (int i = 1; i < argc; i++) {
-        if (argv[i][0] == '-' && argv[i][1] == 's' && i + 1 < argc) {
-            seed = atoi(argv[++i]);
-        }
+    if (argc > 2 && strcmp(argv[2], "-s") == 0) {
+        srand(atoi(argv[3]));
+    } else {
+        srand(time(0));
     }
-
-    srand(seed);
 
     cout << "Welcome to the CSE240 Terraformer!!" << endl;
     cout << "Enter grid width: ";
@@ -112,17 +110,21 @@ int main(int argc, char** argv) {
 
 // Function definitions
 void dropDirtBall(int** landmass, int maxWidth, int maxHeight, int centerX, int centerY, int radius, int power) {
+    // centerY = 24;
+    // centerX = 24;
+    cout << "(X, Y) : " << centerX << " " << centerY << endl;
     for (int y = centerY - radius; y <= centerY + radius; y++) {
         for (int x = centerX - radius; x <= centerX + radius; x++) {
             if (boundsCheck(x, y, 0, 0, maxWidth, maxHeight)) {
                 double distance = sqrt(pow(x - centerX, 2) + pow(y - centerY, 2));
                 if (distance <= radius) {
-                    int impactValue = power - static_cast<int>(distance);
+                    int impactValue = power - static_cast<int>(floor(distance));
                     landmass[y][x] += impactValue;
                 }
             }
         }
     }
+    printLandmass(landmass, maxWidth, maxHeight);
 }
 
 bool boundsCheck(int x, int y, int minx, int miny, int maxx, int maxy) {
@@ -158,6 +160,16 @@ void printLand(int** land, int width, int height, ostream& out) {
     }
 }
 
+void printLandmass(int** landmass, int maxWidth, int maxHeight) {
+    for (int y = 0; y < maxHeight; y++) {
+        for (int x = 0; x < maxWidth; x++) {
+            cout << landmass[y][x] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 char** finalizeMap(int** map, int width, int height, int waterline) {
     char** charMap = new char*[height];
     for (int i = 0; i < height; i++) {
@@ -173,14 +185,16 @@ char** finalizeMap(int** map, int width, int height, int waterline) {
                 charMap[y][x] = '#';
             } else if (value >= 0.5 * waterline && value <= waterline) {
                 charMap[y][x] = '~';
-            } else if (value > waterline && value < (waterline + 0.15 * landzone)) {
-                charMap[y][x] = '.';
-            } else if (value >= (waterline + 0.15 * landzone) && value < (waterline + 0.4 * landzone)) {
-                charMap[y][x] = '-';
-            } else if (value >= (waterline + 0.4 * landzone) && value < (waterline + 0.8 * landzone)) {
-                charMap[y][x] = '*';
-            } else {
-                charMap[y][x] = '^';
+            } else if (value > waterline){
+                if ( value < (waterline + 0.15 * landzone)) {
+                    charMap[y][x] = '.';
+                } else if (value > waterline && value >= (waterline + 0.15 * landzone) && value < (waterline + 0.4 * landzone)) {
+                    charMap[y][x] = '-';
+                } else if (value > waterline && value >= (waterline + 0.4 * landzone) && value < (waterline + 0.8 * landzone)) {
+                    charMap[y][x] = '*';
+                } else {
+                    charMap[y][x] = '^';
+                }
             }
         }
     }
