@@ -1,13 +1,13 @@
 all: exe
 
-exe: hw_<lastname>_<firstname>.o zombie_<lastname>.o
-    g++ -o exe hw_<lastname>_<firstname>.o zombie_<lastname>.o
+exe: hw_song_jun.o zombie_song.o
+\tg++ -o exe hw_song_jun.o zombie_song.o
 
-hw_<lastname>_<firstname>.o: hw_<lastname>_<firstname>.cpp linkedlist_<lastname>.hpp zombie_<lastname>.h
-    g++ -c hw_<lastname>_<firstname>.cpp
+hw_song_jun.o: hw_song_jun.cpp linkedlist_song.hpp zombie_song.h
+\tg++ -c hw_song_jun.cpp
 
-zombie_<lastname>.o: zombie_<lastname>.cpp zombie_<lastname>.h
-    g++ -c zombie_<lastname>.cpp
+zombie_song.o: zombie_song.cpp zombie_song.h
+\tg++ -c zombie_song.cpp
 
 clean:
-    rm -f *.o exe
+\trm -f *.o exe
